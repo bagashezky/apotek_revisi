@@ -40,7 +40,7 @@ class Apotek_data extends CI_Model
 		$this->db->where('YEAR(tanggal)', $tahun);
         return $this->db->get('tbl_jurnal_umum');
     }	
-    
+
 	function buku_besar($akun)
     {
 		$this->db->select('*');
@@ -49,6 +49,37 @@ class Apotek_data extends CI_Model
 		$query = $this->db->get();
 		return $query;
     }
+
+    public function buku_besar_filter($akun, $bulan, $tahun) {
+        $this->db->select('*');
+        $this->db->from('tbl_buku_besar');
+        $this->db->where('nama_akun', $akun);
+        $this->db->where('MONTH(tanggal)', $bulan);
+        $this->db->where('YEAR(tanggal)', $tahun);
+        $query = $this->db->get();
+        return $query;
+    }
+
+    public function pembelian_filter($bulan, $tahun) {
+        $this->db->select('*');
+        $this->db->order_by('tgl_beli', 'ASC');
+        $this->db->where('MONTH(tgl_beli)', $bulan);
+        $this->db->where('YEAR(tgl_beli)', $tahun);
+        $run_q = $this->db->get('pembelian');
+        return $run_q;
+    }
+    
+    public function penjualan_filter($bulan, $tahun) {
+        $q = "SELECT table_invoice.*, obats.harga_obat 
+              FROM table_invoice 
+              LEFT JOIN obats ON table_invoice.nama_obat = obats.nama_obat 
+              WHERE MONTH(table_invoice.tgl_beli) = $bulan 
+              AND YEAR(table_invoice.tgl_beli) = $tahun";
+        $run_q = $this->db->query($q);
+        return $run_q;
+    }
+    
+    
 
     function category()
     {

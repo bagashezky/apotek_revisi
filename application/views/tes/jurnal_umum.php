@@ -84,6 +84,29 @@
     <address>
         <strong>Apotek Milan</strong>
         <br>Jurnal Umum
+		<?php
+            if ($selected_bulan && $selected_tahun) {
+                // Convert the numeric month value to its corresponding name
+                $month_names = array(
+                    '1' => 'Januari',
+                    '2' => 'Februari',
+                    '3' => 'Maret',
+                    '4' => 'April',
+                    '5' => 'Mei',
+                    '6' => 'Juni',
+                    '7' => 'Juli',
+                    '8' => 'Agustus',
+                    '9' => 'September',
+                    '10' => 'Oktober',
+                    '11' => 'November',
+                    '12' => 'Desember'
+                );
+
+                $selected_bulan_name = $month_names[$selected_bulan];
+
+                echo '<br>Periode ' . $selected_bulan_name . ' ' . $selected_tahun;
+            }
+        ?>
     </address>
 </div>
 					</div>

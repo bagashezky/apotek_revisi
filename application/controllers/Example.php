@@ -163,6 +163,8 @@ class Example extends CI_Controller
 		$data['dataakun'] = $this->apotek_data->dataakun()->result();
 		$data['get_coa'] = $this->apotek_data->get_coa();
 		$data['get_akunjurnal'] = $this->apotek_data->get_akunjurnal();
+		$data['selected_bulan'] = $bulan; // Added this line
+		$data['selected_tahun'] = $tahun; // Added this line
 		$this->template->write('title', 'Jurnal Umum', TRUE);
 		$this->template->write('header', 'Dashboard');
 		$this->template->write_view('content', 'tes/jurnal_umum', $data, true);
@@ -171,20 +173,43 @@ class Example extends CI_Controller
 	
 	//Menambahkan fungsi untuk melihat buku besar
 	function buku_besar() {
-		$data['buku_besar_kas'] = $this->apotek_data->buku_besar('Kas')->result();
-		$data['buku_besar_persediaan'] = $this->apotek_data->buku_besar('Persediaan Barang')->result();
+		$bulan = $this->input->post('bulan');
+		$tahun = $this->input->post('tahun');
 		$data['get_akunjurnal'] = $this->apotek_data->get_akunjurnal();
+	
+		if($bulan != null && $tahun != null) {
+			$data['buku_besar_kas'] = $this->apotek_data->buku_besar_filter('Kas', $bulan, $tahun)->result();
+			$data['buku_besar_persediaan'] = $this->apotek_data->buku_besar_filter('Persediaan Barang', $bulan, $tahun)->result();
+		} else {
+			$data['buku_besar_kas'] = $this->apotek_data->buku_besar('Kas')->result();
+			$data['buku_besar_persediaan'] = $this->apotek_data->buku_besar('Persediaan Barang')->result();
+		}
+	    $data['selected_bulan'] = $bulan; // Added this line
+    $data['selected_tahun'] = $tahun; // Added this line
 		$this->template->write('title', 'Buku Besar', TRUE);
 		$this->template->write('header', 'Dashboard');
 		$this->template->write_view('content', 'tes/buku_besar', $data, true);
 		$this->template->render();
 	}
 	
+	
 	//Menambahkan fungsi untuk melihat kartu stok
 	function kartu_stok() {
-		$data['pembelian'] = $this->apotek_data->pembelian()->result();
-		$data['penjualan'] = $this->apotek_data->penjualan()->result();
-		$data['data'] = array_merge($data['pembelian'], $data['penjualan']);
+	$bulan = $this->input->post('bulan');
+    $tahun = $this->input->post('tahun');
+    $data['get_akunjurnal'] = $this->apotek_data->get_akunjurnal();
+
+    if ($bulan != null && $tahun != null) {
+        $data['pembelian'] = $this->apotek_data->pembelian_filter($bulan, $tahun)->result();
+        $data['penjualan'] = $this->apotek_data->penjualan_filter($bulan, $tahun)->result();
+    } else {
+        $data['pembelian'] = $this->apotek_data->pembelian()->result();
+        $data['penjualan'] = $this->apotek_data->penjualan()->result();
+    }
+	$data['data'] = array_merge($data['pembelian'], $data['penjualan']);
+    $data['selected_bulan'] = $bulan; // Added this line
+    $data['selected_tahun'] = $tahun; // Added this line
+
 		$this->template->write('title', 'Kartu Stok', TRUE);
 		$this->template->write('header', 'Dashboard');
 		$this->template->write_view('content', 'tes/kartu_stok', $data, true);
