@@ -33,13 +33,14 @@ class Apotek_data extends CI_Model
         return $this->db->get('tbl_jurnal_umum');
     }
 
+
 	function jurnal_umum_filter($bulan, $tahun)
     {
 		$this->db->where('MONTH(tanggal)', $bulan);
 		$this->db->where('YEAR(tanggal)', $tahun);
         return $this->db->get('tbl_jurnal_umum');
-    }		
-	
+    }	
+    
 	function buku_besar($akun)
     {
 		$this->db->select('*');
