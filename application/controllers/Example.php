@@ -153,8 +153,14 @@ class Example extends CI_Controller
 		$this->template->render();
 	}
 	function jurnal_umum() {
+		$bulan = $this->input->post('bulan');
+		$tahun = $this->input->post('tahun');
+		if($bulan == null OR $tahun == null) {
+			$data['jurnal_umum'] = $this->apotek_data->jurnal_umum()->result();
+		} else {
+			$data['jurnal_umum'] = $this->apotek_data->jurnal_umum_filter($bulan, $tahun)->result();
+		}
 		$data['dataakun'] = $this->apotek_data->dataakun()->result();
-		$data['jurnal_umum'] = $this->apotek_data->jurnal_umum()->result();
 		$data['get_coa'] = $this->apotek_data->get_coa();
 		$data['get_akunjurnal'] = $this->apotek_data->get_akunjurnal();
 		$this->template->write('title', 'Jurnal Umum', TRUE);
