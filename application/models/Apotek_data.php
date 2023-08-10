@@ -591,6 +591,20 @@ class Apotek_data extends CI_Model
         return $this->db->query('SELECT * FROM obats WHERE jmlh_stok BETWEEN 1 AND 8');           
     }
 
+    function getStorageLocationByCategory($nama_kategori) {
+        $this->db->select('nama_rak_penyimpanan');
+        $this->db->from('kategori_obat');
+        $this->db->where('nama_kategori', $nama_kategori);
+        $query = $this->db->get();
+
+        if ($query->num_rows() > 0) {
+            $result = $query->row();
+            return $result->nama_rak_penyimpanan;
+        } else {
+            return ''; // Jika tidak ada hasil
+        }
+    }
+
      function countstock(){       
       $cs =  $this->db->query('SELECT * FROM obats WHERE jmlh_stok BETWEEN 0 AND 0'); 
         $nullstock = $cs->num_rows();

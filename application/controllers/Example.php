@@ -60,18 +60,26 @@ class Example extends CI_Controller
 		$this->template->write_view('content', 'tes/table_exp', $data, true);
 
 		$this->template->render();
-
+		
 	}
-
+	
 	function table_stock() {
+		$this->load->model('apotek_data');
 		$data['table_stock'] = $this->apotek_data->outstock()->result();
 		$data['table_alstock'] = $this->apotek_data->almostout()->result();
+		$this->load->helper(array('form', 'url')); // Ganti 'nama_helper' dengan nama berkas helper Anda
+	
+		foreach (array_merge($data['table_alstock'], $data['table_stock']) as $as) {
+			$as->nama_rak_penyimpanan = $this->apotek_data->getStorageLocationByCategory($as->nama_kategori);
+		}
+	
 		$this->template->write('title', 'Obat Habis', TRUE);
 		$this->template->write('header', 'Dashboard');
-		$this->template->write_view('content', 'tes/table_stock', $data,  true);
-
+		$this->template->write_view('content', 'tes/table_stock', $data, true);
+	
 		$this->template->render();
 	}
+	
 
 	function form_cat() {
 		$data['get_cat'] = $this->apotek_data->get_category();
