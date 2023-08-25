@@ -49,6 +49,28 @@
 								</select>
 							</div>
 						</div>
+						<div class="col-lg-2">
+						<div class="input-group">
+							<select class="form-control" name="nama_obat">
+								<option value="" disabled="" selected="">Pilih Nama Obat</option>
+								<?php
+								// Buat array untuk menyimpan nama obat yang telah ditampilkan
+								$nama_obat_shown = array();
+
+								foreach ($data as $c) {
+									// Jika nama obat belum ditampilkan, tampilkan dan tambahkan ke array
+									if (!in_array($c->nama_obat, $nama_obat_shown)) {
+										$nama_obat_shown[] = $c->nama_obat;
+								?>
+									<option value="<?php echo $c->nama_obat; ?>"><?php echo $c->nama_obat; ?></option>
+								<?php
+									}
+								}
+								?>
+							</select>
+						</div>
+					</div>
+
 						<div class="col-xs-1">
 							<input class="btn btn-primary" type="submit" value="Filter">
 						</div>

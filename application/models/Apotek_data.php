@@ -68,6 +68,14 @@ class Apotek_data extends CI_Model
         $run_q = $this->db->get('pembelian');
         return $run_q;
     }
+    public function cek_obat_filter($bulan, $tahun) {
+        $this->db->select('*');
+        $this->db->order_by('tgl_beli', 'ASC');
+        $this->db->where('MONTH(tgl_beli)', $bulan);
+        $this->db->where('YEAR(tgl_beli)', $tahun);
+        $run_q = $this->db->get('obats');
+        return $run_q;
+    }
     
     public function penjualan_filter($bulan, $tahun) {
         $q = "SELECT table_invoice.*, obats.harga_obat 
@@ -137,7 +145,6 @@ class Apotek_data extends CI_Model
         return $run_q;
     }
 
-
     function purchase()
     {
         $this->db->select('*');
@@ -158,6 +165,43 @@ class Apotek_data extends CI_Model
 		$run_q = $this->db->get('pembelian');
 		return $run_q;
     }
+    function cek_obat()
+    {
+        $this->db->select('*');
+		$this->db->order_by ('tgl_beli', 'ASC');
+		$run_q = $this->db->get('obats');
+		return $run_q;
+    }
+    function cek_pembelian()
+    {
+        $data = array();
+        $query = $this->db->get('pembelian')->result_array();
+
+        if( is_array($query) && count ($query) > 0 )
+        {
+        foreach ($query as $row ) 
+        {
+          $data[$row['banyak']] = $row['banyak'];
+        }
+        }
+        asort($data);
+        return $data;
+    }
+
+    function get_purchases_by_obat($nama_obat) {
+        $this->db->select('banyak');
+        $this->db->from('pembelian');
+        $this->db->where('nama_obat', $nama_obat);
+        
+        $query = $this->db->get();
+        
+        if ($query->num_rows() > 0) {
+            return $query->row()->banyak;
+        } else {
+            return null;
+        }
+    }
+
 
     function get_category()
     {
@@ -336,6 +380,21 @@ class Apotek_data extends CI_Model
         foreach ($query as $row ) 
         {
           $data[$row['nama_obat']] = $row['nama_obat'];
+        }
+        }
+        asort($data);
+        return $data;
+    }
+    function get_kode_obat()
+    {
+        $data = array();
+        $query = $this->db->get('obats')->result_array();
+
+        if( is_array($query) && count ($query) > 0 )
+        {
+        foreach ($query as $row ) 
+        {
+          $data[$row['kode_obat']] = $row['kode_obat'];
         }
         }
         asort($data);

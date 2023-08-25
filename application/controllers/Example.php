@@ -199,30 +199,79 @@ class Example extends CI_Controller
 		$this->template->write_view('content', 'tes/buku_besar', $data, true);
 		$this->template->render();
 	}
+
+	function compareByDate($a, $b) {
+		$dateA = strtotime($a->tgl_beli);
+		$dateB = strtotime($b->tgl_beli);
 	
+		if ($dateA == $dateB) {
+			return 0;
+		}
 	
-	//Menambahkan fungsi untuk melihat kartu stok
+		return ($dateA < $dateB) ? -1 : 1;
+	}
+
 	function kartu_stok() {
-	$bulan = $this->input->post('bulan');
-    $tahun = $this->input->post('tahun');
-    $data['get_akunjurnal'] = $this->apotek_data->get_akunjurnal();
-
-    if ($bulan != null && $tahun != null) {
-        $data['pembelian'] = $this->apotek_data->pembelian_filter($bulan, $tahun)->result();
-        $data['penjualan'] = $this->apotek_data->penjualan_filter($bulan, $tahun)->result();
-    } else {
-        $data['pembelian'] = $this->apotek_data->pembelian()->result();
-        $data['penjualan'] = $this->apotek_data->penjualan()->result();
-    }
-	$data['data'] = array_merge($data['pembelian'], $data['penjualan']);
-    $data['selected_bulan'] = $bulan; // Added this line
-    $data['selected_tahun'] = $tahun; // Added this line
-
+		$bulan = $this->input->post('bulan');
+		$tahun = $this->input->post('tahun');
+		$nama_obat = $this->input->post('nama_obat');
+		
+	
+		$data['get_akunjurnal'] = $this->apotek_data->get_akunjurnal();
+	
+		if ($bulan != null && $tahun != null) {
+			$data['pembelian'] = $this->apotek_data->pembelian_filter($bulan, $tahun)->result();
+			$data['penjualan'] = $this->apotek_data->penjualan_filter($bulan, $tahun)->result();
+		} else {
+			$data['pembelian'] = $this->apotek_data->pembelian()->result();
+			$data['penjualan'] = $this->apotek_data->penjualan()->result();
+		}
+	
+		$data['data'] = array_merge($data['pembelian'], $data['penjualan']);
+	
+		if ($nama_obat != null) {
+			$filtered_data = array_filter($data['data'], function ($item) use ($nama_obat) {
+				return $item->nama_obat == $nama_obat;
+			});
+			$data['data'] = $filtered_data;
+		}
+	
+		if (!empty($data['data'])) {
+			// Pengurutan langsung berdasarkan tanggal
+			usort($data['data'], function ($a, $b) {
+				$dateA = strtotime($a->tgl_beli);
+				$dateB = strtotime($b->tgl_beli);
+				return $dateA - $dateB;
+			});
+		}
+	
+		$data['selected_bulan'] = $bulan;
+		$data['selected_tahun'] = $tahun;
+	
 		$this->template->write('title', 'Kartu Stok', TRUE);
 		$this->template->write('header', 'Dashboard');
 		$this->template->write_view('content', 'tes/kartu_stok', $data, true);
 		$this->template->render();
 	}
+
+	function lap_persediaan() {
+			$data['obats'] = $this->apotek_data->cek_obat()->result();
+			
+			$nama_obat = $this->input->post('nama_obat');
+
+			foreach ($data['obats'] as $obat) {
+				$obat->banyak = $this->apotek_data->get_purchases_by_obat($obat->nama_obat);
+			}
+			
+			$data['data'] = array_merge($data['obats']);
+			
+			$this->template->write('title', 'Laporan Persediaan', TRUE);
+			$this->template->write('header', 'Dashboard');
+			$this->template->write_view('content', 'tes/lap_persediaan', $data, true);
+			$this->template->render();
+	}
+	
+	
 
 	function jenis_obat() {
 		

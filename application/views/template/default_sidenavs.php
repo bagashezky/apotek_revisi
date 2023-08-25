@@ -77,6 +77,7 @@
 								<li><a href="<?php echo base_url('example/jurnal_umum') ?>">Jurnal Umum</a></li>
 								<li><a href="<?php echo base_url('example/buku_besar') ?>">Buku Besar</a></li>
 								<li><a href="<?php echo base_url('example/kartu_stok') ?>">Kartu Stok</a></li>
+								<li><a href="<?php echo base_url('example/lap_persediaan') ?>">Laporan Persediaan</a></li>
 								<li><a href="<?php echo base_url('example/pembelian') ?>">Laporan Pembelian</a></li>
 								
 							</ul>
