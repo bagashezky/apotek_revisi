@@ -254,22 +254,22 @@ class Example extends CI_Controller
 		$this->template->render();
 	}
 
-	function lap_persediaan() {
-			$data['obats'] = $this->apotek_data->cek_obat()->result();
-			
-			$nama_obat = $this->input->post('nama_obat');
+	function lap_persediaan()
+	{
+		$data['get_akunjurnal'] = $this->apotek_data->get_akunjurnal();
+        
+        $data['banyak'] = $this->apotek_data->purchase1();
+        $data['obats'] = $this->apotek_data->cek_obat()->result();
+        
+        // Hapus array_merge karena hanya ada satu array
+        $data['data'] = $data['banyak'];
 
-			foreach ($data['obats'] as $obat) {
-				$obat->banyak = $this->apotek_data->get_purchases_by_obat($obat->nama_obat);
-			}
-			
-			$data['data'] = array_merge($data['obats']);
-			
-			$this->template->write('title', 'Laporan Persediaan', TRUE);
-			$this->template->write('header', 'Dashboard');
-			$this->template->write_view('content', 'tes/lap_persediaan', $data, true);
-			$this->template->render();
+        $this->template->write('title', 'Kartu Stok', TRUE);
+        $this->template->write('header', 'Dashboard');
+        $this->template->write_view('content', 'tes/lap_persediaan', $data, true);
+        $this->template->render();
 	}
+
 	
 	
 

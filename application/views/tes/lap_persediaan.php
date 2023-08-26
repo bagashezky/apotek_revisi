@@ -21,12 +21,13 @@
 				<form method="POST" action="<?php echo site_url('example/lap_persediaan'); ?>">
 					<div class="row">
 						
-						<div class="col-sm-4 invoice-col" style="text-align: center;">
+					<div class="col-sm-4 invoice-col text-center">
     <address>
         <strong>Apotek Milan</strong>
-        <br>Kartu Stok
+        <br>Laporan Persediaan
     </address>
 </div>
+
 				</div>
 				</form>
 					<table id="kartu_stok" class="table table-striped table-bordered">
@@ -44,34 +45,15 @@
 					</thead>
 					<tbody>
 						<?php
-						$totalBanyak = [];
+		
 						foreach ($data as $c) {
-							if (isset($c->id_pembelian)) {
-								// Periksa apakah nama obat sudah ada dalam $totalBanyak
-								if (isset($totalBanyak[$c->nama_obat])) {
-									// Jika sudah ada, tambahkan jumlah banyak
-									$totalBanyak[$c->nama_obat] += intval($c->banyak);
-								} else {
-									// Jika belum ada, tambahkan nama obat dan jumlah banyak ke $totalBanyak
-									$totalBanyak[$c->nama_obat] = intval($c->banyak);
-								}
-							} elseif (isset($c->id_tagihan)) {
-								// Periksa apakah nama obat sudah ada dalam $totalBanyak
-								if (isset($totalBanyak[$c->nama_obat])) {
-									// Jika sudah ada, kurangi jumlah banyak
-									$totalBanyak[$c->nama_obat] -= intval($c->banyak);
-								} else {
-									// Jika belum ada, tambahkan nama obat dengan jumlah banyak negatif ke $totalBanyak
-									$totalBanyak[$c->nama_obat] = -intval($c->banyak);
-								}
-							}
-					?>
+							?>
 							<tr>
-								<td><?php echo $c->nama_obat; ?></td>
-								<td><?php echo $c->harga_obat; ?></td>
-								<td></td>
-								<td></td>
-								<td></td>
+							<td><?php echo $c->nama_obat; ?></td>
+                <td><?php echo $c->harga_obat; ?></td>
+                <td><?php echo $c->obat_masuk; ?></td>
+                <td><?php echo $c->obat_keluar; ?></td>
+                <td><?php echo $c->jmlh_stok; ?></td>
 							</tr>
 						<?php } ?>
 					</tbody>

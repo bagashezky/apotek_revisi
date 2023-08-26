@@ -157,6 +157,29 @@ class Apotek_data extends CI_Model
             $run_q = $this->db->get('pembelian');
             return $run_q;
     }
+    function purchase1()
+    {
+            $this->db->select('p.nama_obat, SUM(p.banyak) as obat_masuk, SUM(i.banyak) as obat_keluar, o.harga_obat, o.jmlh_stok');
+            $this->db->from('pembelian p');
+            $this->db->join('table_invoice i', 'p.nama_obat = i.nama_obat', 'left');
+            $this->db->join('obats o', 'o.nama_obat = p.nama_obat', 'left');
+            $this->db->group_by('p.nama_obat'); // Group hasil berdasarkan nama_obat
+            return $this->db->get()->result();
+        
+        
+    }
+    function purchase2()
+    {
+        $this->db->select('*');
+            
+            $this->db->select('SUM(banyak) AS penjualan');
+        
+            $this->db->group_by('nama_obat');
+            $this->db->order_by ('tgl_beli', 'DESC');
+
+            $run_q = $this->db->get('table_invoice');
+            return $run_q->result();
+    }
 
     function pembelian()
     {
@@ -188,18 +211,13 @@ class Apotek_data extends CI_Model
         return $data;
     }
 
-    function get_purchases_by_obat($nama_obat) {
-        $this->db->select('banyak');
+    function get_purchases_by_obat() {
+        $this->db->select('nama_obat, SUM(banyak) AS total_banyak');
         $this->db->from('pembelian');
-        $this->db->where('nama_obat', $nama_obat);
-        
+        $this->db->group_by('nama_obat');
         $query = $this->db->get();
         
-        if ($query->num_rows() > 0) {
-            return $query->row()->banyak;
-        } else {
-            return null;
-        }
+        return $query->result();
     }
 
 
